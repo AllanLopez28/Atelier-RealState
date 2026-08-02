@@ -1,0 +1,18 @@
+# Dependencias
+node_modules/
+
+# Build de Next.js
+.next/
+
+# Variables de entorno (¡IMPORTANTE! Contiene claves secretas)
+.env
+.env.local
+.env*.local
+
+# Archivos de debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de Supabase temporales
+supabase/.temp/
