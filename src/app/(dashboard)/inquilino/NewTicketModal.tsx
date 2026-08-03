@@ -5,7 +5,7 @@ import { createTicket } from "./actions";
 
 export default function NewTicketModal() {
   const [isOpen, setIsOpen] = useState(false);
-  const [state, formAction] = useActionState(createTicket, { success: false, error: null });
+  const [state, formAction] = useActionState(createTicket, { success: false, error: undefined });
 
   if (state?.success && isOpen) {
     setIsOpen(false);
