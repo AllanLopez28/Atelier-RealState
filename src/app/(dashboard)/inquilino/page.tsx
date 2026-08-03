@@ -48,18 +48,21 @@ export default async function InquilinoDashboardPage() {
           <div className="bg-white rounded-[24px] p-8 lg:p-10 shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div>
               <p className="text-[11px] font-bold text-gray-400 tracking-widest uppercase mb-2">Próximo Pago</p>
-              <div className="flex items-baseline gap-2 mb-4">
-                <h2 className="text-[42px] font-extrabold text-[#001738] leading-none tracking-tight">
+              <div className="flex flex-col mb-4">
+                <h2 className="text-[42px] font-extrabold text-[#001738] leading-none tracking-tight mb-2">
                   {formatCurrency(pago.monto, pago.moneda)}
                 </h2>
-                <span className="text-[18px] font-bold text-gray-400">{pago.moneda}</span>
+                <span className="text-[18px] font-normal text-slate-700">{pago.moneda}</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-500">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="flex items-start gap-2 text-gray-500 mt-6">
+                <svg className="w-4 h-4 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <p className="text-[13px] font-medium">
-                  Vence el {new Date(pago.fecha_vencimiento).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })}
+                <p className="text-[13px] font-medium leading-snug">
+                  Vence el 30 de<br/>
+                  <span className="capitalize">
+                    {new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
+                  </span>
                 </p>
               </div>
             </div>
