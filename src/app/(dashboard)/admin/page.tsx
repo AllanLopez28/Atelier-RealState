@@ -243,9 +243,7 @@ export default async function AdminDashboard() {
                     </span>
                   </td>
                   <td className="px-6 py-5 text-right">
-                    {(app.status === 'En Revisión' || app.status === 'Pendiente Docs') && (
-                      <ActionButton applicationId={app.id} prospectId={app.prospectId} />
-                    )}
+                    <ActionButton applicationId={app.id} prospectId={app.prospectId} status={app.status} />
                   </td>
                 </tr>
               ))}
