@@ -43,3 +43,9 @@ export async function login(prevState: any, formData: FormData) {
     redirect("/prospecto");
   }
 }
+
+export async function logout() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/login");
+}

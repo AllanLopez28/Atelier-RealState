@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ReactNode } from "react";
+import { logout } from "@/app/(auth)/login/actions";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
@@ -72,8 +73,18 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
           </button>
 
-          <div className="text-[13px] font-semibold text-slate-700 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
-            Session: Active
+          <div className="flex items-center gap-4">
+            <div className="text-[13px] font-semibold text-slate-700 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
+              Session: Active
+            </div>
+            <form action={logout}>
+              <button 
+                type="submit" 
+                className="text-[13px] font-medium text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-full transition-colors border border-red-100"
+              >
+                Cerrar Sesión
+              </button>
+            </form>
           </div>
         </header>
 
