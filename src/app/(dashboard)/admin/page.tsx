@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { ActionButton } from "./ActionButton";
 import { createClient } from "@/lib/supabase/server";
+import NewNoticeModal from "./NewNoticeModal";
+import DeleteNoticeButton from "./DeleteNoticeButton";
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
@@ -24,6 +26,13 @@ export default async function AdminDashboard() {
     .select("*", { count: "exact", head: true });
     
   const pendingCount = (apps || []).filter((a: any) => ['En Revisión', 'Pendiente Docs', 'Pre-Aprobada'].includes(a.status)).length;
+
+  // Fetch real notices
+  const { data: avisos } = await supabase
+    .from("avisos")
+    .select("*")
+    .order("fecha_publicacion", { ascending: false })
+    .limit(3);
 
   // Map data to the format expected by the UI
   const mappedApplications = (apps || []).map((app: any) => {
@@ -281,45 +290,39 @@ export default async function AdminDashboard() {
             </div>
           </div>
 
-          {/* Alerts Widget */}
-          <div className="bg-[#f8f9fc] rounded-2xl border border-blue-50/50 p-6">
-            <h3 className="text-[15px] font-bold text-slate-800 flex items-center gap-2 mb-5">
-              <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-              Alertas Recientes
-            </h3>
-            <div className="space-y-3">
-              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex gap-4">
-                <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0 text-red-500">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
+          {/* Avisos Widget */}
+          <div className="bg-[#f8f9fc] rounded-2xl border border-blue-50/50 p-6 flex flex-col h-[350px]">
+            <div className="flex justify-between items-center mb-5">
+              <h3 className="text-[15px] font-bold text-slate-800 flex items-center gap-2">
+                <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                Avisos a Inquilinos
+              </h3>
+              <NewNoticeModal />
+            </div>
+            
+            <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
+              {(avisos || []).map((aviso: any) => (
+                <div key={aviso.id} className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full ${aviso.tipo === 'urgente' ? 'bg-red-500' : aviso.tipo === 'evento' ? 'bg-blue-400' : 'bg-gray-300'}`}></div>
+                      <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                        {aviso.tipo} • {new Date(aviso.fecha_publicacion).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}
+                      </span>
+                    </div>
+                    <DeleteNoticeButton noticeId={aviso.id} />
+                  </div>
+                  <h4 className="text-[13px] font-semibold text-slate-800 mb-1 leading-snug">{aviso.titulo}</h4>
+                  <p className="text-[12px] text-gray-500 line-clamp-2">{aviso.descripcion}</p>
                 </div>
-                <div>
-                  <p className="text-[13.5px] font-semibold text-slate-800">Fuga de agua reportada</p>
-                  <p className="text-[12px] text-gray-500 flex items-center gap-2 mt-0.5">
-                    <span>Casa del Sol</span>
-                    <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-                    <span>Hace 2 horas</span>
-                  </p>
+              ))}
+              {(!avisos || avisos.length === 0) && (
+                <div className="text-center py-6 text-gray-400 text-[13px]">
+                  No hay avisos publicados.
                 </div>
-              </div>
-              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex gap-4">
-                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 text-gray-500">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-[13.5px] font-semibold text-slate-800">Pago rechazado</p>
-                  <p className="text-[12px] text-gray-500 flex items-center gap-2 mt-0.5">
-                    <span>Unidad 3B</span>
-                    <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-                    <span>J. Doe</span>
-                  </p>
-                </div>
-              </div>
+              )}
             </div>
           </div>
 

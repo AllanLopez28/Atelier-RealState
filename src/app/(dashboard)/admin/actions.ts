@@ -46,3 +46,51 @@ export async function revertApplication(applicationId: string, prospectId: strin
 
   revalidatePath("/admin");
 }
+
+export async function createNotice(prevState: any, formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return { error: "No autorizado" };
+
+  const titulo = formData.get("titulo") as string;
+  const descripcion = formData.get("descripcion") as string;
+  const tipo = formData.get("tipo") as string;
+
+  if (!titulo || !descripcion || !tipo) {
+    return { error: "Todos los campos son obligatorios." };
+  }
+
+  const { error } = await supabase
+    .from("avisos")
+    .insert({
+      titulo,
+      descripcion,
+      tipo,
+    });
+
+  if (error) return { error: "Error creando aviso: " + error.message };
+
+  // Revalidate both admin and tenant dashboards to see changes immediately
+  revalidatePath("/admin");
+  revalidatePath("/inquilino");
+  
+  return { success: true };
+}
+
+export async function deleteNotice(id: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) throw new Error("No autorizado");
+
+  const { error } = await supabase
+    .from("avisos")
+    .delete()
+    .eq("id", id);
+
+  if (error) throw new Error(`Error eliminando aviso: ${error.message}`);
+
+  revalidatePath("/admin");
+  revalidatePath("/inquilino");
+}
