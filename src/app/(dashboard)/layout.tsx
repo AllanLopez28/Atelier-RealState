@@ -1,8 +1,21 @@
 import Link from "next/link";
 import { ReactNode } from "react";
 import { logout } from "@/app/(auth)/login/actions";
+import { createClient } from "@/lib/supabase/server";
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+export default async function DashboardLayout({ children }: { children: ReactNode }) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  let profile = null;
+  if (user) {
+    const { data } = await supabase
+      .from('profiles')
+      .select('first_name, last_name, role, avatar_url')
+      .eq('id', user.id)
+      .single();
+    profile = data;
+  }
   return (
     <div className="min-h-screen bg-[#F8F9FA] flex">
       {/* Sidebar */}
@@ -12,7 +25,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <Link href="/" className="flex items-center gap-3">
             <div className="w-6 h-6 flex items-center justify-center text-[#c2a77d]">
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
-                <path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/>
+                <path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z" />
               </svg>
             </div>
             <span className="font-semibold text-slate-800 tracking-[0.15em] text-[15px]">ATELIER</span>
@@ -45,12 +58,18 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         {/* User Profile */}
         <div className="p-6 mt-auto">
           <div className="bg-[#f2f7ff] p-4 rounded-2xl flex items-center gap-4">
-            <div className="w-10 h-10 bg-gray-200 rounded-full overflow-hidden flex-shrink-0">
-               <div className="w-full h-full bg-[url('https://i.pravatar.cc/150?u=a042581f4e29026704d')] bg-cover"></div>
+            <div className="w-10 h-10 bg-white border border-blue-100 rounded-full overflow-hidden flex-shrink-0 flex items-center justify-center text-blue-600 font-bold text-[14px]">
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                `${profile?.first_name?.[0] || ''}${profile?.last_name?.[0] || ''}`.toUpperCase() || 'US'
+              )}
             </div>
             <div>
-              <p className="text-[14px] font-semibold text-slate-800 leading-tight">Jane Cooper</p>
-              <p className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mt-1">Premium Tenant</p>
+              <p className="text-[14px] font-semibold text-slate-800 leading-tight">
+                {profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}` : 'Usuario'}
+              </p>
+
             </div>
           </div>
         </div>
@@ -65,7 +84,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </button>
-          
+
           <button className="text-gray-500 hover:text-slate-800 transition-colors relative">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -78,8 +97,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               Session: Active
             </div>
             <form action={logout}>
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="text-[13px] font-medium text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-full transition-colors border border-red-100"
               >
                 Cerrar Sesión
