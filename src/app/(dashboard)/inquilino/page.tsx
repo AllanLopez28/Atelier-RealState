@@ -41,7 +41,7 @@ export default async function InquilinoDashboardPage() {
     <div className="flex flex-col lg:flex-row gap-10 max-w-[1200px] w-full mx-auto">
       
       {/* Columna Izquierda (Pagos y Mantenimiento) */}
-      <div className="flex-1 lg:max-w-[65%] flex flex-col gap-10">
+      <div className="flex-1 min-w-0 lg:max-w-[65%] flex flex-col gap-10">
         
         {/* Próximo Pago */}
         {pago && (
@@ -67,14 +67,14 @@ export default async function InquilinoDashboardPage() {
               </div>
             </div>
 
-            <div className="flex gap-3">
-              <button className="flex items-center gap-2 px-6 py-4 bg-[#f4f7fc] hover:bg-[#ebf1fa] text-[#001738] rounded-xl text-[14px] font-semibold transition-colors border border-gray-100">
+            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto mt-4 md:mt-0">
+              <button className="w-full sm:w-auto justify-center flex items-center gap-2 px-6 py-4 bg-[#f4f7fc] hover:bg-[#ebf1fa] text-[#001738] rounded-xl text-[14px] font-semibold transition-colors border border-gray-100">
                 <svg className="w-5 h-5 text-[#5d6e5c]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 Ver Detalle
               </button>
-              <button className="flex items-center gap-2 px-6 py-4 bg-[#5d6e5c] hover:bg-[#4a5849] text-white rounded-xl text-[14px] font-semibold shadow-sm transition-colors">
+              <button className="w-full sm:w-auto justify-center flex items-center gap-2 px-6 py-4 bg-[#5d6e5c] hover:bg-[#4a5849] text-white rounded-xl text-[14px] font-semibold shadow-sm transition-colors">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                 </svg>
@@ -94,8 +94,8 @@ export default async function InquilinoDashboardPage() {
             <NewTicketModal />
           </div>
 
-          <div className="bg-white rounded-[24px] shadow-[0_2px_12px_rgba(0,0,0,0.02)] border border-gray-100 overflow-hidden">
-            <table className="w-full text-left border-collapse">
+          <div className="bg-white rounded-[24px] shadow-[0_2px_12px_rgba(0,0,0,0.02)] border border-gray-100 overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[700px]">
               <thead>
                 <tr className="border-b border-gray-100">
                   <th className="px-8 py-5 text-[11px] font-bold text-slate-800 uppercase tracking-widest w-1/5">Ticket</th>
@@ -141,7 +141,7 @@ export default async function InquilinoDashboardPage() {
       </div>
 
       {/* Columna Derecha (Avisos) */}
-      <div className="flex-1 lg:max-w-[35%]">
+      <div className="flex-1 min-w-0 lg:max-w-[35%]">
         <div className="bg-[#f4f7fc] rounded-[24px] p-6 lg:p-8 h-full flex flex-col border border-blue-50/50 shadow-inner">
           <div className="flex items-start gap-4 mb-8">
             <div className="mt-1 w-6 h-6 flex items-center justify-center text-[#001738]">
